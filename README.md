@@ -1,92 +1,22 @@
-# Template go Repository
+# crypto2influx
 
 ## tl;dr
 
-This is a template go repository with actions already set up to create compiled releases
+Fetch data from [coinmarketcap.com](https://coinmarketcap.com) and write it to influxdb.
+The data can then be querried from grafana for custom coin dashboards
 
-## What does this Template provide?
+## Current state
 
-* a basic cli application with subcommands based on [Kong](https://github.com/alecthomas/kong)
-* logging using zerolog
-* some customisations like a more descriptive version info
-* GitHub workflow to run tests on every push
-* GitHub Workflow to build binary releases with [goreleaser](https://github.com/goreleaser/goreleaser)
+Right now this is not much more than a poc to connect all the dots in go code
 
-## What is missing?
-
-* A sample for a spinner using [spinner](https://github.com/briandowns/spinner)
-* some sample code for a cli interactive selection dialogue using [promptui](https://github.com/manifoldco/promptui)
-
-## How to use this template
-
-### Fetch the project
-
-```bash
-git clone https://github.com/gentoomaniac/go-template.git ./
-rm -r .git
-```
-
-### update all references to the template
+## How to run
 
 ```
-# goreleaser IDs and binary names
-sed 's/template-application/my-new-application/g' .goreleaser.yaml
-
-# go.mod
-sed 's#gentoomaniac/go-template#githubuser/reponame#g' go.mod
-```
-
-### check in the code
-
-```
-git init
-git add -A
-git commit -m 'import template'
-```
-
-## How to build locally
-
-```
-goreleaser build --single-target --snapshot
-```
-
-## Example runs
-
-### help
-
-```
-> template-application --help
-Usage: template-application <command>
-
-Flags:
-  -h, --help             Show context-sensitive help.
-  -v, --verbosity=INT    Increase verbosity.
-  -q, --quiet            Do not run upgrades.
-      --json             Log as json
-      --debug            shortcut for -vvvv
-
-Commands:
-  foo
-    FooBar command
-
-Run "template-application <command> --help" for more information on a command.
-```
-
-### logging
-
-```
-> template-application -vvv
-8:40PM INF Default command
-```
-
-```
-> template-application -vvv --json foo
-{"level":"info","time":"2021-11-05T20:41:33+01:00","message":"foo command"}
-```
-
-### version
-
-```
-template-application -V
-template-application commit:bf9d771 release:snapshot build:workflow/1 date:2021-11-05T19:58:00Z goVersion:go1.17.2 platform:linux/amd64
+> go run . -vvv -k <your-api-token> -c bitcoin -c ethereum -c crypto-com-coin -c loopring -c enjin-coin -c curecoin
+9:21PM INF  lastUpdate=2021-11-17T20:21:02Z name=Bitcoin price=60136.113124675714
+9:21PM INF  lastUpdate=2021-11-17T20:21:05Z name=Curecoin price=0.08947823170101954
+9:21PM INF  lastUpdate=2021-11-17T20:21:02Z name=Ethereum price=4222.4588941124075
+9:21PM INF  lastUpdate=2021-11-17T20:20:09Z name=Loopring price=2.5049635560118797
+9:21PM INF  lastUpdate=2021-11-17T20:21:03Z name="Enjin Coin" price=2.903175277585872
+9:21PM INF  lastUpdate=2021-11-17T20:21:06Z name="Crypto.com Coin" price=0.5434956410936232
 ```
