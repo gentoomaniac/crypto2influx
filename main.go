@@ -26,12 +26,12 @@ var (
 var cli struct {
 	logging.LoggingConfig
 
-	Coin                 []string `help:"coins to fetch data for and its values: <slug>:<buy_price>:<amount>" short:"c" required:""`
-	CoinmarketplaceToken string   `help:"API key for coinmarketcap.com" required:""`
-	InfluxToken          string   `help:"API token for influxcloud" required:""`
-	InfluxURL            *url.URL `help:"url of influxdb" default:"https://eu-central-1-1.aws.cloud2.influxdata.com"`
-	InfluxOrg            string   `help:"influxdb org name" required:""`
-	InfluxBucket         string   `help:"influxdb bucket name" required:""`
+	Coin               []string `help:"coins to fetch data for and its values: <slug>:<buy_price>:<amount>" short:"c" required:""`
+	CoinmarketcapToken string   `help:"API key for coinmarketcap.com" required:""`
+	InfluxToken        string   `help:"API token for influxcloud" required:""`
+	InfluxURL          *url.URL `help:"url of influxdb" default:"https://eu-central-1-1.aws.cloud2.influxdata.com"`
+	InfluxOrg          string   `help:"influxdb org name" required:""`
+	InfluxBucket       string   `help:"influxdb bucket name" required:""`
 
 	Version gocli.VersionFlag `short:"V" help:"Display version."`
 }
@@ -86,7 +86,7 @@ func main() {
 		slugs = append(slugs, cd.Slug)
 	}
 
-	c, err := NewCoinmarketcap(cli.CoinmarketplaceToken, nil)
+	c, err := NewCoinmarketcap(cli.CoinmarketcapToken, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set up coinmarketcap client")
 		ctx.Exit(1)
