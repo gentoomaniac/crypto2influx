@@ -9,6 +9,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/rs/zerolog/log"
 
+	"github.com/gentoomaniac/crypto2influx/pkg/coinmarketcap"
 	"github.com/gentoomaniac/gocli"
 	"github.com/gentoomaniac/logging"
 
@@ -86,7 +87,7 @@ func main() {
 		slugs = append(slugs, cd.Slug)
 	}
 
-	c, err := NewCoinmarketcap(cli.CoinmarketcapToken, nil)
+	c, err := coinmarketcap.NewCoinmarketcap(cli.CoinmarketcapToken, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set up coinmarketcap client")
 		ctx.Exit(1)

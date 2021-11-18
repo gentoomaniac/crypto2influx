@@ -1,4 +1,4 @@
-package main
+package coinmarketcap
 
 import (
 	"encoding/json"
