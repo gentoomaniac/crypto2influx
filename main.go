@@ -106,12 +106,19 @@ func main() {
 	for _, coin := range coins.Data {
 		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("")
 		recordString := fmt.Sprintf(
-			"%s,slug=%s,name=%s price=%f,buy=%f,amount=%f",
+			"%s,slug=%s,name=%s price=%f,buy=%f,amount=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f",
 			coin.Symbol,
 			coin.Slug, strings.ReplaceAll(coin.Name, " ", "\\ "),
 			coin.Quote["USD"].Price,
 			coinData[coin.Slug].BuyPrice,
 			coinData[coin.Slug].AmountOwned,
+			coin.Quote["USD"].Volume24H,
+			coin.Quote["USD"].VolumeChange24H,
+			coin.Quote["USD"].PercentChange1H,
+			coin.Quote["USD"].PercentChange24H,
+			coin.Quote["USD"].PercentChange7D,
+			coin.Quote["USD"].PercentChange30D,
+			coin.Quote["USD"].MarketCap,
 		)
 		writeAPI.WriteRecord(recordString)
 	}
