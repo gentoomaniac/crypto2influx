@@ -23,7 +23,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": 17,
-    "iteration": 1637278832743,
+    "iteration": 1637339245934,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -35,6 +35,504 @@
           "w": 24,
           "x": 0,
           "y": 0
+        },
+        "id": 73,
+        "panels": [],
+        "title": "Alerts",
+        "type": "row"
+      },
+      {
+        "alert": {
+          "alertRuleTags": {},
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  55000
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A",
+                  "5m",
+                  "now"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "keep_state",
+          "for": "5m",
+          "frequency": "1m",
+          "handler": 1,
+          "message": "BTC low! Buy the dip!",
+          "name": "BTC low alert",
+          "noDataState": "no_data",
+          "notifications": []
+        },
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 1
+        },
+        "id": 101,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"BTC\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "op": "lt",
+            "value": 55000,
+            "visible": true
+          }
+        ],
+        "title": "BTC low at $55.000",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "alert": {
+          "alertRuleTags": {},
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0.41
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A",
+                  "5m",
+                  "now"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "keep_state",
+          "for": "5m",
+          "frequency": "1m",
+          "handler": 1,
+          "message": "CRO low! Buy the dip!",
+          "name": "CRO low alert",
+          "noDataState": "no_data",
+          "notifications": []
+        },
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 1
+        },
+        "id": 371,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"CRO\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "op": "lt",
+            "value": 0.41,
+            "visible": true
+          }
+        ],
+        "title": "CRO low at $0.41",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "alert": {
+          "alertRuleTags": {},
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  -2.6
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A",
+                  "5m",
+                  "now"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "keep_state",
+          "for": "5m",
+          "frequency": "1m",
+          "handler": 1,
+          "message": "LRC low! Buy the dip!",
+          "name": "LRC low alert",
+          "noDataState": "no_data",
+          "notifications": []
+        },
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 1
+        },
+        "id": 372,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"LRC\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "op": "lt",
+            "value": -2.6,
+            "visible": true
+          }
+        ],
+        "title": "LRC low at $2.40",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "alert": {
+          "alertRuleTags": {},
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  4000
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A",
+                  "5m",
+                  "now"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "for": "5m",
+          "frequency": "1m",
+          "handler": 1,
+          "message": "ETH low! Buy the dip!",
+          "name": "ETH low at $4.000 alert",
+          "noDataState": "no_data",
+          "notifications": []
+        },
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 1
+        },
+        "id": 373,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ETH\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "op": "lt",
+            "value": 4000,
+            "visible": true
+          }
+        ],
+        "title": "ETH low at $4.000",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "datasource": null,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 7
         },
         "id": 25,
         "panels": [],
@@ -56,7 +554,7 @@
               "mode": "absolute",
               "steps": [
                 {
-                  "color": "green",
+                  "color": "text",
                   "value": null
                 }
               ]
@@ -69,7 +567,7 @@
           "h": 3,
           "w": 2,
           "x": 0,
-          "y": 1
+          "y": 8
         },
         "id": 100,
         "options": {
@@ -87,7 +585,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.2.3",
+        "pluginVersion": "8.2.5",
         "targets": [
           {
             "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"buy\" or r[\"_field\"] == \"amount\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.buy * r.amount }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> keep(columns: [\"_value\"])\n",
@@ -115,7 +613,7 @@
                   "value": null
                 },
                 {
-                  "color": "light-blue",
+                  "color": "text",
                   "value": 0
                 }
               ]
@@ -128,7 +626,7 @@
           "h": 3,
           "w": 2,
           "x": 2,
-          "y": 1
+          "y": 8
         },
         "id": 18,
         "options": {
@@ -146,7 +644,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.2.3",
+        "pluginVersion": "8.2.5",
         "targets": [
           {
             "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\" or r[\"_field\"] == \"buy\" or r[\"_field\"] == \"amount\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.price * r.amount }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> keep(columns: [\"_value\"])\n",
@@ -154,6 +652,119 @@
           }
         ],
         "title": "Current",
+        "type": "stat"
+      },
+      {
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "text",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 3,
+          "x": 4,
+          "y": 8
+        },
+        "id": 102,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "value"
+        },
+        "pluginVersion": "8.2.5",
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> keep(columns: [\"_value\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "Current Value",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "valueLabel": "name"
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "text",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 3,
+          "x": 7,
+          "y": 8
+        },
+        "id": 226,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "value"
+        },
+        "pluginVersion": "8.2.5",
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"volume24h\")",
+            "refId": "A"
+          }
+        ],
+        "title": "Volume last 24h",
+        "transformations": [],
         "type": "stat"
       },
       {
@@ -209,14 +820,18 @@
         "gridPos": {
           "h": 6,
           "w": 14,
-          "x": 4,
-          "y": 1
+          "x": 10,
+          "y": 8
         },
         "id": 2,
         "options": {
           "legend": {
-            "calcs": [],
-            "displayMode": "hidden",
+            "calcs": [
+              "max",
+              "min",
+              "last"
+            ],
+            "displayMode": "table",
             "placement": "bottom"
           },
           "tooltip": {
@@ -229,12 +844,12 @@
             "refId": "A"
           },
           {
-            "hide": false,
+            "hide": true,
             "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"buy\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
             "refId": "B"
           }
         ],
-        "title": "Histogram ${coin}",
+        "title": "Price ${coin}",
         "transformations": [
           {
             "id": "labelsToFields",
@@ -275,7 +890,7 @@
           "h": 3,
           "w": 2,
           "x": 0,
-          "y": 4
+          "y": 11
         },
         "id": 6,
         "options": {
@@ -293,7 +908,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.2.3",
+        "pluginVersion": "8.2.5",
         "targets": [
           {
             "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\" or r[\"_field\"] == \"buy\" or r[\"_field\"] == \"amount\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.price / r.buy - 1.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> keep(columns: [\"_value\"])\n",
@@ -334,7 +949,7 @@
           "h": 3,
           "w": 2,
           "x": 2,
-          "y": 4
+          "y": 11
         },
         "id": 46,
         "options": {
@@ -352,7 +967,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.2.3",
+        "pluginVersion": "8.2.5",
         "targets": [
           {
             "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\" or r[\"_field\"] == \"buy\" or r[\"_field\"] == \"amount\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.price*r.amount - r.buy*r.amount }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> keep(columns: [\"_value\"])\n",
@@ -363,101 +978,180 @@
         "type": "stat"
       },
       {
-        "collapsed": true,
-        "datasource": null,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 42
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "text",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
         },
-        "id": 73,
-        "panels": [
+        "gridPos": {
+          "h": 3,
+          "w": 3,
+          "x": 4,
+          "y": 11
+        },
+        "id": 225,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "value"
+        },
+        "pluginVersion": "8.2.5",
+        "targets": [
           {
-            "datasource": "Crypto",
-            "description": "",
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "never",
-                  "spanNulls": true,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "line"
-                  }
-                },
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    }
-                  ]
-                },
-                "unit": "currencyUSD"
-              },
-              "overrides": []
-            },
-            "gridPos": {
-              "h": 6,
-              "w": 6,
-              "x": 0,
-              "y": 1
-            },
-            "id": 101,
-            "options": {
-              "legend": {
-                "calcs": [],
-                "displayMode": "hidden",
-                "placement": "bottom"
-              },
-              "tooltip": {
-                "mode": "single"
-              }
-            },
-            "targets": [
-              {
-                "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"BTC\")\n  |> filter(fn: (r) => r[\"_field\"] == \"price\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "title": "BTC low",
-            "transformations": [],
-            "type": "timeseries"
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"marketcap\")",
+            "refId": "A"
           }
         ],
-        "title": "Alerts",
-        "type": "row"
+        "title": "Market Cap",
+        "transformations": [],
+        "type": "stat"
+      },
+      {
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "dark-green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 3,
+          "x": 7,
+          "y": 11
+        },
+        "id": 297,
+        "maxPerRow": 8,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.2.5",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"volumechange24h\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.volumechange24h - 1.0}))\n  |> keep(columns: [\"_value\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "24h volume change",
+        "transformations": [],
+        "type": "stat"
+      },
+      {
+        "datasource": "Crypto",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "dark-green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 0,
+          "y": 14
+        },
+        "id": 138,
+        "maxPerRow": 8,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.2.5",
+        "repeat": "change",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "query": "from(bucket: \"crypto\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"${coin}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"change${change}\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({r with _value: r.change${change} - 1.0}))\n  |> keep(columns: [\"_value\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "${change} change",
+        "transformations": [],
+        "type": "stat"
       }
     ],
-    "refresh": "5s",
-    "schemaVersion": 31,
+    "refresh": "10s",
+    "schemaVersion": 32,
     "style": "dark",
     "tags": [],
     "templating": {
@@ -465,7 +1159,7 @@
         {
           "allValue": null,
           "current": {
-            "selected": false,
+            "selected": true,
             "text": [
               "All"
             ],
@@ -489,16 +1183,62 @@
           "skipUrlSync": false,
           "sort": 0,
           "type": "query"
+        },
+        {
+          "allValue": null,
+          "current": {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          "description": null,
+          "error": null,
+          "hide": 2,
+          "includeAll": true,
+          "label": null,
+          "multi": false,
+          "name": "change",
+          "options": [
+            {
+              "selected": true,
+              "text": "All",
+              "value": "$__all"
+            },
+            {
+              "selected": false,
+              "text": "1h",
+              "value": "1h"
+            },
+            {
+              "selected": false,
+              "text": "24h",
+              "value": "24h"
+            },
+            {
+              "selected": false,
+              "text": "7d",
+              "value": "7d"
+            },
+            {
+              "selected": false,
+              "text": "30d",
+              "value": "30d"
+            }
+          ],
+          "query": "1h,24h,7d,30d",
+          "queryValue": "",
+          "skipUrlSync": false,
+          "type": "custom"
         }
       ]
     },
     "time": {
-      "from": "now-24h",
+      "from": "now-12h",
       "to": "now"
     },
     "timepicker": {},
     "timezone": "",
     "title": "Crypto",
     "uid": "bJ-N3_57z",
-    "version": 48
+    "version": 76
   }
