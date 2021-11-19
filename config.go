@@ -30,8 +30,8 @@ type Coin struct {
 type Investment struct {
 	BuyPrice float64 `json:"buy_price"`
 	Amount   float64 `json:"amount"`
-	date     Date    `json:"date"`
-	platform string  `json:"platform"`
+	Date     Date    `json:"date"`
+	Platform string  `json:"platform"`
 }
 
 // First create a type alias
