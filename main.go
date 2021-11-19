@@ -34,6 +34,8 @@ var cli struct {
 	InfluxOrg          string   `help:"influxdb org name" required:""`
 	InfluxBucket       string   `help:"influxdb bucket name" required:""`
 
+	WriteOld bool `help:"write old line format data" default:"true" negatable:""`
+
 	Version gocli.VersionFlag `short:"V" help:"Display version."`
 }
 
@@ -104,14 +106,24 @@ func main() {
 	writeAPI := client.WriteAPI(cli.InfluxOrg, cli.InfluxBucket)
 
 	for _, coin := range coins.Data {
-		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("")
-		recordString := fmt.Sprintf(
-			"%s,slug=%s,name=%s price=%f,buy=%f,amount=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f",
+		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")
+		coin_data := fmt.Sprintf(
+			"coin,symbol=%s,slug=%s,name=%s,is_active=%d,is_fiat=%d circulating_supply=%f,total_supply=%f,max_supply=%f,cmc_rank=%d",
 			coin.Symbol,
-			coin.Slug, strings.ReplaceAll(coin.Name, " ", "\\ "),
+			coin.Slug,
+			strings.ReplaceAll(coin.Name, " ", "\\ "),
+			coin.IsActive,
+			coin.IsFiat,
+			coin.CirculatingSupply,
+			coin.TotalSupply,
+			coin.MaxSupply,
+			coin.CmcRank,
+		)
+		writeAPI.WriteRecord(coin_data)
+		quote_data := fmt.Sprintf(
+			"quote,symbol=%s price=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f,fullydillutedmarketcap=%f,last_updat=%d",
+			coin.Symbol,
 			coin.Quote["USD"].Price,
-			coinData[coin.Slug].BuyPrice,
-			coinData[coin.Slug].AmountOwned,
 			coin.Quote["USD"].Volume24H,
 			coin.Quote["USD"].VolumeChange24H,
 			coin.Quote["USD"].PercentChange1H,
@@ -119,8 +131,30 @@ func main() {
 			coin.Quote["USD"].PercentChange7D,
 			coin.Quote["USD"].PercentChange30D,
 			coin.Quote["USD"].MarketCap,
+			coin.Quote["USD"].FullyDilutedMarketCap,
+			coin.Quote["USD"].LastUpdated.UnixMilli(),
 		)
-		writeAPI.WriteRecord(recordString)
+		writeAPI.WriteRecord(quote_data)
+
+		if cli.WriteOld {
+			recordString := fmt.Sprintf(
+				"%s,slug=%s,name=%s price=%f,buy=%f,amount=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f",
+				coin.Symbol,
+				coin.Slug,
+				strings.ReplaceAll(coin.Name, " ", "\\ "),
+				coin.Quote["USD"].Price,
+				coinData[coin.Slug].BuyPrice,
+				coinData[coin.Slug].AmountOwned,
+				coin.Quote["USD"].Volume24H,
+				coin.Quote["USD"].VolumeChange24H,
+				coin.Quote["USD"].PercentChange1H,
+				coin.Quote["USD"].PercentChange24H,
+				coin.Quote["USD"].PercentChange7D,
+				coin.Quote["USD"].PercentChange30D,
+				coin.Quote["USD"].MarketCap,
+			)
+			writeAPI.WriteRecord(recordString)
+		}
 	}
 	writeAPI.Flush()
 
