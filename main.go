@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -28,12 +27,7 @@ var (
 var cli struct {
 	logging.LoggingConfig
 
-	Coin               []string `help:"coins to fetch data for and its values: <slug>:<buy_price>:<amount>" short:"c" required:""`
-	CoinmarketcapToken string   `help:"API key for coinmarketcap.com" required:""`
-	InfluxToken        string   `help:"API token for influxcloud" required:""`
-	InfluxURL          *url.URL `help:"url of influxdb" default:"https://eu-central-1-1.aws.cloud2.influxdata.com"`
-	InfluxOrg          string   `help:"influxdb org name" required:""`
-	InfluxBucket       string   `help:"influxdb bucket name" required:""`
+	Coin []string `help:"coins to fetch data for and its values: <slug>:<buy_price>:<amount>" short:"c" required:""`
 
 	ConfigFile *os.File `help:"path to config file" required:""`
 	WriteOld   bool     `help:"write old line format data" default:"true" negatable:""`
@@ -97,7 +91,7 @@ func main() {
 		ctx.Exit(1)
 	}
 
-	c, err := coinmarketcap.NewCoinmarketcap(cli.CoinmarketcapToken, nil)
+	c, err := coinmarketcap.NewCoinmarketcap(config.Coinmarketcap.Token, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set up coinmarketcap client")
 		ctx.Exit(1)
@@ -109,9 +103,9 @@ func main() {
 		ctx.Exit(1)
 	}
 
-	client := influxdb2.NewClient(cli.InfluxURL.String(), cli.InfluxToken)
+	client := influxdb2.NewClient(config.Influxcloud.BaseURL, config.Influxcloud.Token)
 	defer client.Close()
-	writeAPI := client.WriteAPI(cli.InfluxOrg, cli.InfluxBucket)
+	writeAPI := client.WriteAPI(config.Influxcloud.OrgName, config.Influxcloud.BucketName)
 
 	for _, coin := range coins.Data {
 		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")

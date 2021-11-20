@@ -34,6 +34,7 @@ type InfluxcloudCfg struct {
 	Token      string `json:"token"`
 	OrgName    string `json:"org"`
 	BucketName string `json:"bucket"`
+	BaseURL    string `json:"base_url"`
 }
 
 type Coin struct {
