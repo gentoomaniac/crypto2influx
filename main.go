@@ -116,7 +116,7 @@ func main() {
 	for _, coin := range coins.Data {
 		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")
 		coinLineFormat := fmt.Sprintf(
-			"coin,symbol=%s,slug=%s,name=%s,is_active=%d,is_fiat=%d circulating_supply=%f,total_supply=%f,max_supply=%f,cmc_rank=%d",
+			"coin,symbol=%s,slug=%s,name=%s,is_active=%d,is_fiat=%d circulating_supply=%f,total_supply=%f,max_supply=%f,cmc_rank=%d %d",
 			coin.Symbol,
 			coin.Slug,
 			strings.ReplaceAll(coin.Name, " ", "\\ "),
@@ -126,10 +126,11 @@ func main() {
 			coin.TotalSupply,
 			coin.MaxSupply,
 			coin.CmcRank,
+			coin.LastUpdated.UnixNano(),
 		)
 		writeAPI.WriteRecord(coinLineFormat)
 		quoteLineFormat := fmt.Sprintf(
-			"quote,symbol=%s price=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f,fullydillutedmarketcap=%f,last_updat=%d",
+			"quote,symbol=%s price=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f,fullydillutedmarketcap=%f %d",
 			coin.Symbol,
 			coin.Quote["USD"].Price,
 			coin.Quote["USD"].Volume24H,
@@ -140,7 +141,7 @@ func main() {
 			coin.Quote["USD"].PercentChange30D,
 			coin.Quote["USD"].MarketCap,
 			coin.Quote["USD"].FullyDilutedMarketCap,
-			coin.Quote["USD"].LastUpdated.UnixMilli(),
+			coin.Quote["USD"].LastUpdated.UnixNano(),
 		)
 		writeAPI.WriteRecord(quoteLineFormat)
 
@@ -166,13 +167,14 @@ func main() {
 
 		for uid, investment := range config.Coins[coin.Symbol].Investments {
 			investmentLineFormat := fmt.Sprintf(
-				"investments,symbol=%s,platform=%s,uid=%s buy_price=%f,amount=%f,date=%d",
+				"investments,symbol=%s,platform=%s,uid=%s buy_price=%f,amount=%f,date=%d %d",
 				coin.Symbol,
 				investment.Platform,
 				uid,
 				investment.BuyPrice,
 				investment.Amount,
 				investment.Date.UnixMilli(),
+				investment.Date.UnixNano(),
 			)
 			writeAPI.WriteRecord(investmentLineFormat)
 		}
