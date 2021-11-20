@@ -1,15 +1,29 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
+	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 )
 
+func NewConfigFromFile(f *os.File) (*Config, error) {
+	raw, _ := ioutil.ReadAll(bufio.NewReader(f))
+	config := &Config{}
+	err := json.Unmarshal(raw, config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
 type Config struct {
 	Coinmarketcap CoinmarketcapCfg `json:"coinmarketcap"`
 	Influxcloud   InfluxcloudCfg   `json:"influxcloud"`
-	Coins         []Coin           `json:"coins"`
+	Coins         map[string]Coin  `json:"coins"`
 }
 
 type CoinmarketcapCfg struct {
@@ -23,15 +37,15 @@ type InfluxcloudCfg struct {
 }
 
 type Coin struct {
-	Slug        string       `json:"slug"`
-	Investments []Investment `json:"investments"`
+	Slug        string                `json:"slug"`
+	Investments map[string]Investment `json:"investments"`
 }
 
 type Investment struct {
-	BuyPrice float64 `json:"buy_price"`
-	Amount   float64 `json:"amount"`
-	Date     Date    `json:"date"`
-	Platform string  `json:"platform"`
+	BuyPrice float64   `json:"buy_price"`
+	Amount   float64   `json:"amount"`
+	Date     time.Time `json:"date"`
+	Platform string    `json:"platform"`
 }
 
 // First create a type alias
@@ -40,7 +54,7 @@ type Date time.Time
 // Implement Marshaler and Unmarshaler interface
 func (d *Date) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), "\"")
-	t, err := time.Parse("2006-01-02", s)
+	t, err := time.Parse(time.RFC3339, s)
 	if err != nil {
 		return err
 	}

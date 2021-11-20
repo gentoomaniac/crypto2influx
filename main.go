@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -34,7 +35,8 @@ var cli struct {
 	InfluxOrg          string   `help:"influxdb org name" required:""`
 	InfluxBucket       string   `help:"influxdb bucket name" required:""`
 
-	WriteOld bool `help:"write old line format data" default:"true" negatable:""`
+	ConfigFile *os.File `help:"path to config file" required:""`
+	WriteOld   bool     `help:"write old line format data" default:"true" negatable:""`
 
 	Version gocli.VersionFlag `short:"V" help:"Display version."`
 }
@@ -89,6 +91,12 @@ func main() {
 		slugs = append(slugs, cd.Slug)
 	}
 
+	config, err := NewConfigFromFile(cli.ConfigFile)
+	if err != nil {
+		log.Error().Err(err).Str("file", cli.ConfigFile.Name()).Msg("failed reading config from file")
+		ctx.Exit(1)
+	}
+
 	c, err := coinmarketcap.NewCoinmarketcap(cli.CoinmarketcapToken, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set up coinmarketcap client")
@@ -107,7 +115,7 @@ func main() {
 
 	for _, coin := range coins.Data {
 		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")
-		coin_data := fmt.Sprintf(
+		coinLineFormat := fmt.Sprintf(
 			"coin,symbol=%s,slug=%s,name=%s,is_active=%d,is_fiat=%d circulating_supply=%f,total_supply=%f,max_supply=%f,cmc_rank=%d",
 			coin.Symbol,
 			coin.Slug,
@@ -119,8 +127,8 @@ func main() {
 			coin.MaxSupply,
 			coin.CmcRank,
 		)
-		writeAPI.WriteRecord(coin_data)
-		quote_data := fmt.Sprintf(
+		writeAPI.WriteRecord(coinLineFormat)
+		quoteLineFormat := fmt.Sprintf(
 			"quote,symbol=%s price=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f,fullydillutedmarketcap=%f,last_updat=%d",
 			coin.Symbol,
 			coin.Quote["USD"].Price,
@@ -134,7 +142,7 @@ func main() {
 			coin.Quote["USD"].FullyDilutedMarketCap,
 			coin.Quote["USD"].LastUpdated.UnixMilli(),
 		)
-		writeAPI.WriteRecord(quote_data)
+		writeAPI.WriteRecord(quoteLineFormat)
 
 		if cli.WriteOld {
 			recordString := fmt.Sprintf(
@@ -154,6 +162,19 @@ func main() {
 				coin.Quote["USD"].MarketCap,
 			)
 			writeAPI.WriteRecord(recordString)
+		}
+
+		for uid, investment := range config.Coins[coin.Symbol].Investments {
+			investmentLineFormat := fmt.Sprintf(
+				"investments,symbol=%s,platform=%s,uid=%s buy_price=%f,amount=%f,date=%d",
+				coin.Symbol,
+				investment.Platform,
+				uid,
+				investment.BuyPrice,
+				investment.Amount,
+				investment.Date.UnixMilli(),
+			)
+			writeAPI.WriteRecord(investmentLineFormat)
 		}
 	}
 	writeAPI.Flush()
