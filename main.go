@@ -27,10 +27,7 @@ var (
 var cli struct {
 	logging.LoggingConfig
 
-	Coin []string `help:"coins to fetch data for and its values: <slug>:<buy_price>:<amount>" short:"c" required:""`
-
 	ConfigFile *os.File `help:"path to config file" required:""`
-	WriteOld   bool     `help:"write old line format data" default:"true" negatable:""`
 
 	Version gocli.VersionFlag `short:"V" help:"Display version."`
 }
@@ -77,18 +74,15 @@ func main() {
 	})
 	logging.Setup(&cli.LoggingConfig)
 
-	coinData := make(map[string]*CoinData)
-	var slugs []string
-	for _, coin := range cli.Coin {
-		cd := NewCoinData(coin)
-		coinData[cd.Slug] = cd
-		slugs = append(slugs, cd.Slug)
-	}
-
 	config, err := NewConfigFromFile(cli.ConfigFile)
 	if err != nil {
 		log.Error().Err(err).Str("file", cli.ConfigFile.Name()).Msg("failed reading config from file")
 		ctx.Exit(1)
+	}
+
+	var slugs []string
+	for _, coin := range config.Coins {
+		slugs = append(slugs, coin.Slug)
 	}
 
 	c, err := coinmarketcap.NewCoinmarketcap(config.Coinmarketcap.Token, nil)
@@ -108,7 +102,7 @@ func main() {
 	writeAPI := client.WriteAPI(config.Influxcloud.OrgName, config.Influxcloud.BucketName)
 
 	for _, coin := range coins.Data {
-		log.Info().Str("name", coin.Name).Float64("price", coin.Quote["USD"].Price).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")
+		log.Info().Str("name", coin.Name).Time("lastUpdate", coin.Quote["USD"].LastUpdated).Msg("sending data for coin")
 		coinLineFormat := fmt.Sprintf(
 			"coin,symbol=%s,slug=%s,name=%s,is_active=%d,is_fiat=%d circulating_supply=%f,total_supply=%f,max_supply=%f,cmc_rank=%d %d",
 			coin.Symbol,
@@ -138,40 +132,6 @@ func main() {
 			coin.Quote["USD"].LastUpdated.UnixNano(),
 		)
 		writeAPI.WriteRecord(quoteLineFormat)
-
-		if cli.WriteOld {
-			recordString := fmt.Sprintf(
-				"%s,slug=%s,name=%s price=%f,buy=%f,amount=%f,volume24h=%f,volumechange24h=%f,change1h=%f,change24h=%f,change7d=%f,change30d=%f,marketcap=%f",
-				coin.Symbol,
-				coin.Slug,
-				strings.ReplaceAll(coin.Name, " ", "\\ "),
-				coin.Quote["USD"].Price,
-				coinData[coin.Slug].BuyPrice,
-				coinData[coin.Slug].AmountOwned,
-				coin.Quote["USD"].Volume24H,
-				coin.Quote["USD"].VolumeChange24H,
-				coin.Quote["USD"].PercentChange1H,
-				coin.Quote["USD"].PercentChange24H,
-				coin.Quote["USD"].PercentChange7D,
-				coin.Quote["USD"].PercentChange30D,
-				coin.Quote["USD"].MarketCap,
-			)
-			writeAPI.WriteRecord(recordString)
-		}
-
-		for uid, investment := range config.Coins[coin.Symbol].Investments {
-			investmentLineFormat := fmt.Sprintf(
-				"investments,symbol=%s,platform=%s,uid=%s buy_price=%f,amount=%f,date=%d %d",
-				coin.Symbol,
-				investment.Platform,
-				uid,
-				investment.BuyPrice,
-				investment.Amount,
-				investment.Date.UnixMilli(),
-				investment.Date.UnixNano(),
-			)
-			writeAPI.WriteRecord(investmentLineFormat)
-		}
 	}
 	writeAPI.Flush()
 

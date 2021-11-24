@@ -38,15 +38,7 @@ type InfluxcloudCfg struct {
 }
 
 type Coin struct {
-	Slug        string                `json:"slug"`
-	Investments map[string]Investment `json:"investments"`
-}
-
-type Investment struct {
-	BuyPrice float64   `json:"buy_price"`
-	Amount   float64   `json:"amount"`
-	Date     time.Time `json:"date"`
-	Platform string    `json:"platform"`
+	Slug string `json:"slug"`
 }
 
 // First create a type alias
